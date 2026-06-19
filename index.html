@@ -6,7 +6,6 @@
   <title>รวยเงิน — จดเงินง่ายๆ</title>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg:           linear-gradient(145deg,#0d0820 0%,#1a0d40 55%,#0d0820 100%);
@@ -95,26 +94,19 @@
       transition:all .2s;
     }
     .btn-icon-hdr:hover{background:var(--tx-hover);}
-    .user-chip{
-      font-size:.72rem;color:var(--text-muted);
-      padding:5px 10px;border-radius:20px;
-      border:1px solid var(--panel-border);
-      background:var(--panel-bg);
-      max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-    }
-    .btn-logout{
+    .btn-clear-all{
       padding:6px 13px;border-radius:10px;
-      border:1px solid var(--panel-border);
-      background:transparent;color:var(--text-muted);
+      border:1px solid rgba(248,113,113,.3);
+      background:transparent;color:rgba(248,113,113,.7);
       font-size:.76rem;font-weight:600;cursor:pointer;
       transition:all .2s;font-family:inherit;
     }
-    .btn-logout:hover{color:#f87171;border-color:#f87171;}
+    .btn-clear-all:hover{color:#f87171;border-color:#f87171;background:rgba(248,113,113,.08);}
 
     /* ── CONTAINER ──────────────────────────────────────── */
     .container{max-width:1100px;margin:0 auto;padding:24px 16px 60px;}
 
-    /* ── CHAT INPUT SECTION ─────────────────────────────── */
+    /* ── CHAT INPUT ─────────────────────────────────────── */
     .chat-section{
       background:var(--chat-bg);
       border:1px solid var(--panel-border);
@@ -137,16 +129,12 @@
       100%{box-shadow:0 0 0 0 rgba(74,222,128,0);}
     }
     .chat-header-text{font-size:.82rem;color:var(--text-muted);font-weight:500;}
-    .chat-examples{
-      display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;
-    }
+    .chat-examples{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
     .chat-pill{
       padding:5px 12px;border-radius:20px;
-      background:var(--pill-bg);
-      border:1px solid var(--panel-border);
+      background:var(--pill-bg);border:1px solid var(--panel-border);
       font-size:.78rem;color:var(--text-sub);
-      cursor:pointer;transition:all .15s;
-      font-family:inherit;
+      cursor:pointer;transition:all .15s;font-family:inherit;
     }
     .chat-pill:hover{background:rgba(160,80,255,.25);color:var(--text);}
     .chat-row{display:flex;gap:10px;align-items:center;}
@@ -155,45 +143,36 @@
       border:1.5px solid var(--input-border);
       background:var(--input-bg);color:var(--text);
       font-size:.95rem;outline:none;
-      transition:border-color .2s,box-shadow .2s;
-      font-family:inherit;
+      transition:border-color .2s,box-shadow .2s;font-family:inherit;
     }
     .chat-input:focus{
-      border-color:#a855f7;
-      box-shadow:0 0 0 3px rgba(168,85,247,.15);
+      border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.15);
     }
     .chat-input::placeholder{color:var(--text-muted);opacity:.7;}
     .btn-chat-send{
       padding:13px 22px;border-radius:14px;border:none;
       background:linear-gradient(135deg,#a855f7,#ec4899);
       color:#fff;font-size:.9rem;font-weight:700;
-      cursor:pointer;white-space:nowrap;transition:opacity .2s,transform .15s;
-      font-family:inherit;
+      cursor:pointer;white-space:nowrap;
+      transition:opacity .2s,transform .15s;font-family:inherit;
     }
     .btn-chat-send:hover{opacity:.9;transform:scale(1.02);}
 
     /* Preview bubble */
     .chat-preview{
-      margin-top:14px;padding:14px 16px;
-      border-radius:14px;
-      background:rgba(168,85,247,.1);
-      border:1px solid rgba(168,85,247,.3);
+      margin-top:14px;padding:14px 16px;border-radius:14px;
+      background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.3);
     }
-    .preview-top{
-      display:flex;align-items:center;gap:8px;margin-bottom:10px;
-    }
+    .preview-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
     .preview-badge{
-      font-size:.72rem;padding:3px 9px;border-radius:20px;
-      font-weight:700;
+      font-size:.72rem;padding:3px 9px;border-radius:20px;font-weight:700;
     }
-    .preview-badge.income{background:rgba(74,222,128,.2);color:#4ade80;}
+    .preview-badge.income {background:rgba(74,222,128,.2);color:#4ade80;}
     .preview-badge.expense{background:rgba(248,113,113,.2);color:#f87171;}
     .preview-cat{font-size:.8rem;color:var(--text-muted);}
     .preview-desc{font-size:1rem;font-weight:700;margin-bottom:4px;}
-    .preview-amount{
-      font-size:1.5rem;font-weight:800;
-    }
-    .preview-amount.income{color:#4ade80;}
+    .preview-amount{font-size:1.5rem;font-weight:800;}
+    .preview-amount.income {color:#4ade80;}
     .preview-amount.expense{color:#f87171;}
     .preview-actions{display:flex;gap:8px;margin-top:12px;}
     .btn-confirm{
@@ -207,40 +186,28 @@
       padding:8px 16px;border-radius:10px;
       border:1px solid var(--panel-border);
       background:transparent;color:var(--text-muted);
-      font-size:.85rem;cursor:pointer;font-family:inherit;
-      transition:background .15s;
+      font-size:.85rem;cursor:pointer;font-family:inherit;transition:background .15s;
     }
     .btn-preview-edit:hover{background:var(--tx-hover);}
     .btn-preview-cancel{
-      padding:8px 14px;border-radius:10px;
-      border:none;background:transparent;
-      color:var(--text-muted);font-size:.85rem;
-      cursor:pointer;font-family:inherit;
+      padding:8px 14px;border-radius:10px;border:none;
+      background:transparent;color:var(--text-muted);
+      font-size:.85rem;cursor:pointer;font-family:inherit;
     }
-
-    /* toggle to manual form */
-    .toggle-manual{
-      margin-top:12px;text-align:center;
-    }
+    .toggle-manual{margin-top:12px;text-align:center;}
     .toggle-manual button{
-      background:transparent;border:none;
-      color:var(--text-muted);font-size:.78rem;
-      cursor:pointer;text-decoration:underline;font-family:inherit;
-      padding:4px;
+      background:transparent;border:none;color:var(--text-muted);
+      font-size:.78rem;cursor:pointer;text-decoration:underline;
+      font-family:inherit;padding:4px;
     }
 
-    /* ── MANUAL FORM (collapsible) ──────────────────────── */
+    /* ── MANUAL FORM ────────────────────────────────────── */
     .manual-form{
-      background:var(--panel-bg);
-      border:1px solid var(--panel-border);
-      border-radius:20px;padding:20px;
-      backdrop-filter:blur(16px);
+      background:var(--panel-bg);border:1px solid var(--panel-border);
+      border-radius:20px;padding:20px;backdrop-filter:blur(16px);
       margin-bottom:20px;
     }
-    .manual-form h2{
-      font-size:1rem;font-weight:700;color:var(--h2-color);
-      margin-bottom:16px;
-    }
+    .manual-form h2{font-size:1rem;font-weight:700;color:var(--h2-color);margin-bottom:16px;}
     .form-group{margin-bottom:12px;}
     .form-group label{
       display:block;font-size:.76rem;color:var(--text-muted);
@@ -250,8 +217,7 @@
       width:100%;padding:9px 13px;border-radius:10px;
       border:1px solid var(--input-border);
       background:var(--input-bg);color:var(--text);
-      font-size:.9rem;outline:none;transition:border-color .2s;
-      font-family:inherit;
+      font-size:.9rem;outline:none;transition:border-color .2s;font-family:inherit;
     }
     .form-group input:focus,.form-group select:focus{border-color:#a855f7;}
     .form-group select option{background:var(--opt-bg);color:var(--text);}
@@ -272,8 +238,7 @@
       width:100%;padding:11px;border-radius:12px;border:none;
       background:linear-gradient(135deg,#a855f7,#ec4899);
       color:#fff;font-size:.95rem;font-weight:700;
-      cursor:pointer;margin-top:4px;transition:opacity .2s,transform .15s;
-      font-family:inherit;
+      cursor:pointer;margin-top:4px;transition:opacity .2s,transform .15s;font-family:inherit;
     }
     .btn-add:hover{opacity:.9;transform:scale(1.01);}
     .btn-add.update{background:linear-gradient(135deg,#059669,#0d9488);}
@@ -324,14 +289,10 @@
     .cat-input-cancel:hover{background:rgba(160,80,255,.28);}
 
     /* ── SUMMARY CARDS ──────────────────────────────────── */
-    .summary{
-      display:grid;grid-template-columns:repeat(4,1fr);
-      gap:12px;margin-bottom:18px;
-    }
+    .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
     .card{
       background:var(--card-bg);border:1px solid var(--card-border);
-      border-radius:16px;padding:18px;
-      backdrop-filter:blur(10px);transition:transform .2s;
+      border-radius:16px;padding:18px;backdrop-filter:blur(10px);transition:transform .2s;
     }
     .card:hover{transform:translateY(-3px);}
     .card-icon{font-size:1.5rem;margin-bottom:8px;}
@@ -343,14 +304,13 @@
     .card.margin  .amount{color:#e879f9;}
     .card.margin  .amount.neg{color:#f87171;}
 
-    /* ── TWO-COL GRID ───────────────────────────────────── */
+    /* ── TWO-COL ────────────────────────────────────────── */
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
 
     /* ── PANEL ──────────────────────────────────────────── */
     .panel{
       background:var(--panel-bg);border:1px solid var(--panel-border);
-      border-radius:20px;padding:22px;
-      backdrop-filter:blur(10px);margin-bottom:18px;
+      border-radius:20px;padding:22px;backdrop-filter:blur(10px);margin-bottom:18px;
     }
     .panel h2{font-size:.98rem;font-weight:700;color:var(--h2-color);margin-bottom:16px;}
 
@@ -363,9 +323,7 @@
     .no-line-msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
 
     /* ── INSIGHT BAR ────────────────────────────────────── */
-    .insight-bar{
-      display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;
-    }
+    .insight-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;}
     .insight-chip{
       padding:8px 14px;border-radius:12px;
       background:var(--panel-bg);border:1px solid var(--panel-border);
@@ -383,8 +341,7 @@
     }
     .filter-bar label{font-size:.74rem;color:var(--text-muted);}
     .filter-bar select,.filter-bar input[type="text"]{
-      padding:6px 11px;border-radius:8px;
-      border:1px solid var(--input-border);
+      padding:6px 11px;border-radius:8px;border:1px solid var(--input-border);
       background:var(--input-bg);color:var(--text);
       font-size:.82rem;outline:none;font-family:inherit;
     }
@@ -451,49 +408,12 @@
     .col-mg{font-size:.8rem;}
     .no-tbl{text-align:center;padding:22px;color:var(--text-muted);font-size:.86rem;}
 
-    /* ── AUTH ───────────────────────────────────────────── */
-    #authScreen{
-      min-height:100vh;display:flex;
-      align-items:center;justify-content:center;padding:20px;
-    }
-    .auth-box{
-      background:var(--panel-bg);border:1px solid var(--panel-border);
-      border-radius:24px;padding:40px 32px;
-      width:100%;max-width:400px;
-      backdrop-filter:blur(20px);
-      box-shadow:0 24px 64px rgba(0,0,0,.5);
-    }
-    .auth-brand{text-align:center;margin-bottom:8px;}
-    .auth-brand .big-icon{font-size:3rem;}
-    .auth-brand h1{
-      font-size:1.8rem;font-weight:800;margin-top:4px;
-      background:linear-gradient(90deg,#e879f9,#a855f7,#60a5fa);
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-    }
-    .auth-box .sub{text-align:center;color:var(--text-muted);font-size:.86rem;margin-bottom:8px;}
-    .auth-features{
-      display:flex;flex-direction:column;gap:6px;
-      background:rgba(255,255,255,.04);border-radius:12px;
-      padding:12px 14px;margin-bottom:22px;
-    }
-    .auth-feature{font-size:.8rem;color:var(--text-muted);display:flex;align-items:center;gap:8px;}
-    .auth-error{font-size:.82rem;min-height:20px;margin-bottom:10px;text-align:center;}
-    .auth-btns{display:flex;gap:10px;margin-top:6px;}
-    .btn-signup{
-      width:100%;padding:11px;border-radius:12px;border:none;
-      background:linear-gradient(135deg,#059669,#0d9488);
-      color:#fff;font-size:.95rem;font-weight:700;
-      cursor:pointer;transition:opacity .2s,transform .15s;font-family:inherit;
-    }
-    .btn-signup:hover{opacity:.9;transform:scale(1.01);}
-
     /* ── RESPONSIVE ─────────────────────────────────────── */
     @media(max-width:720px){
       .summary{grid-template-columns:1fr 1fr;}
       .two-col{grid-template-columns:1fr;}
       header{padding:12px 14px;}
       .brand-text{font-size:1.1rem;}
-      .user-chip{display:none;}
     }
     @media(max-width:420px){
       .summary{grid-template-columns:1fr 1fr;}
@@ -516,39 +436,8 @@
 </head>
 <body>
 
-<!-- ── AUTH ───────────────────────────────────────────── -->
-<div id="authScreen">
-  <div class="auth-box">
-    <div class="auth-brand">
-      <div class="big-icon">💰</div>
-      <h1>รวยเงิน</h1>
-    </div>
-    <p class="sub">ผู้ช่วยจดเงินที่ใช้งานง่ายที่สุด</p>
-    <div class="auth-features">
-      <div class="auth-feature">✨ พิมพ์เล่าไปเลย AI จัดการให้เอง</div>
-      <div class="auth-feature">📊 Dashboard บอกชัดเงินหายไปไหน</div>
-      <div class="auth-feature">🔁 ตั้งรายการประจำ ระบบเพิ่มให้เองทุกเดือน</div>
-    </div>
-    <div class="form-group">
-      <label>อีเมล</label>
-      <input type="email" id="authEmail" placeholder="your@email.com"
-        onkeydown="if(event.key==='Enter')signIn()" autocomplete="email" />
-    </div>
-    <div class="form-group">
-      <label>รหัสผ่าน</label>
-      <input type="password" id="authPass" placeholder="••••••••"
-        onkeydown="if(event.key==='Enter')signIn()" autocomplete="current-password" />
-    </div>
-    <div class="auth-error" id="authError"></div>
-    <div class="auth-btns">
-      <button class="btn-add" onclick="signIn()">เข้าสู่ระบบ</button>
-      <button class="btn-signup" onclick="signUp()">สมัครใหม่</button>
-    </div>
-  </div>
-</div>
-
 <!-- ── HEADER ──────────────────────────────────────────── -->
-<header id="mainHeader" style="display:none">
+<header>
   <div class="brand">
     <div class="brand-icon">💰</div>
     <div>
@@ -563,12 +452,11 @@
       <option value="€">€ EUR</option>
     </select>
     <button class="btn-icon-hdr" id="themeToggle" onclick="toggleTheme()" title="เปลี่ยนธีม">🌙</button>
-    <span class="user-chip" id="userEmail"></span>
-    <button class="btn-logout" onclick="logout()">ออก</button>
+    <button class="btn-clear-all" onclick="clearAll()">🗑 ล้างข้อมูล</button>
   </div>
 </header>
 
-<div class="container" id="mainContainer" style="display:none">
+<div class="container">
 
   <!-- ── CHAT INPUT ────────────────────────────────────── -->
   <div class="chat-section">
@@ -738,11 +626,7 @@
       <table class="mtbl">
         <thead>
           <tr>
-            <th>เดือน</th>
-            <th>รายรับ</th>
-            <th>รายจ่าย</th>
-            <th>คงเหลือ</th>
-            <th>อัตรากำไร</th>
+            <th>เดือน</th><th>รายรับ</th><th>รายจ่าย</th><th>คงเหลือ</th><th>อัตรากำไร</th>
           </tr>
         </thead>
         <tbody id="monthlyBody"></tbody>
@@ -756,26 +640,18 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ── SUPABASE ─────────────────────────────────────────── */
-const { createClient } = supabase;
-const sb = createClient(
-  'https://puqftjxihufoodmyrokl.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1cWZ0anhpaHVmb29kbXlyb2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MjMxMDAsImV4cCI6MjA5MTE5OTEwMH0.m0J-sJ0gtoRoKruxXthFrKR0m4UkrpT2l8abLdp_Sdo'
-);
-let currentUser = null;
-
-/* ── STATE ────────────────────────────────────────────── */
-let transactions  = [];
-let recurring     = JSON.parse(localStorage.getItem('acc_rec')  || '[]');
-let budgets       = JSON.parse(localStorage.getItem('acc_bgt')  || '{}');
-let currency      = localStorage.getItem('acc_cur')             || '฿';
-let darkMode      = localStorage.getItem('acc_theme')           !== 'light';
+/* ── STATE (localStorage only) ────────────────────────── */
+let transactions     = JSON.parse(localStorage.getItem('acc_txn')        || '[]');
+let recurring        = JSON.parse(localStorage.getItem('acc_rec')        || '[]');
+let budgets          = JSON.parse(localStorage.getItem('acc_bgt')        || '{}');
+let currency         = localStorage.getItem('acc_cur')                   || '฿';
+let darkMode         = localStorage.getItem('acc_theme')                 !== 'light';
+let customCategories = JSON.parse(localStorage.getItem('acc_custom_cats')|| '[]');
 
 let currentType      = 'income';
 let editingId        = null;
 let chartDonut       = null;
 let chartLine        = null;
-let customCategories = JSON.parse(localStorage.getItem('acc_custom_cats') || '[]');
 let selectedCategory = 'Salary';
 let _catDdHandler    = null;
 let pendingParsed    = null;
@@ -803,37 +679,35 @@ const MON = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','ม�
 /* ── NLP KEYWORDS ─────────────────────────────────────── */
 const NLP = {
   income: {
-    Salary:       ['เงินเดือน','salary','โบนัส','bonus','ค่าจ้าง','ได้เงินเดือน','เดือนนี้เข้า'],
-    Freelance:    ['ฟรีแลนซ์','freelance','รับงาน','งานพิเศษ','ค่าออกแบบ','ค่างาน','รับดีไซน์','ค่าโปรเจกต์'],
-    Investment:   ['หุ้น','ลงทุน','ดอกเบี้ย','ปันผล','กำไร','crypto','คริปโต','ผลตอบแทน'],
+    Salary:        ['เงินเดือน','salary','โบนัส','bonus','ค่าจ้าง','ได้เงินเดือน','เดือนนี้เข้า'],
+    Freelance:     ['ฟรีแลนซ์','freelance','รับงาน','งานพิเศษ','ค่าออกแบบ','ค่างาน','รับดีไซน์','ค่าโปรเจกต์'],
+    Investment:    ['หุ้น','ลงทุน','ดอกเบี้ย','ปันผล','กำไร','crypto','คริปโต','ผลตอบแทน'],
     'Other Income':['รายได้','เงินเข้า','ได้เงิน','รับเงิน','ขายของ','ขาย','โอนมา','ได้มา']
   },
   expense: {
     Food:['ข้าว','กิน','อาหาร','กาแฟ','ชา','เบเกอรี','ก๋วยเตี๋ยว','หมู','ไก่','ปลา','ส้มตำ','ราเมน','ซูชิ',
           'พิซซ่า','แมค','kfc','starbucks','สตาร์บัคส์','delivery','เดลิ','grab food','foodpanda','ชาบู',
           'หมูกะทะ','ลาบ','ผัด','ต้ม','แกง','บุฟเฟ่','ไอศกรีม','ขนม','เค้ก','น้ำดื่ม','โค้ก','เบียร์',
-          'สุกี้','ชาบู','ข้าวมัน','ข้าวหมู','ข้าวไก่','ข้าวต้ม','โจ๊ก','ก๋วย','pad thai','บะหมี่'],
+          'สุกี้','ข้าวมัน','ข้าวหมู','ข้าวไก่','ข้าวต้ม','โจ๊ก','ก๋วย','pad thai','บะหมี่'],
     Transport:['แท็กซี่','taxi','grab','รถ','น้ำมัน','bts','mrt','รถไฟ','รถเมล์','มอเตอร์ไซค์',
-               'จอดรถ','ทางด่วน','ปาร์ก','uber','bolt','โดยสาร','สายการบิน','เครื่องบิน','ตั๋ว','ค่าน้ำมัน'],
+               'จอดรถ','ทางด่วน','ปาร์ก','uber','bolt','โดยสาร','สายการบิน','เครื่องบิน','ตั๋ว'],
     Shopping:['ซื้อ','เสื้อ','กางเกง','รองเท้า','กระเป๋า','เครื่องสำอาง','ห้าง','lazada','shopee',
-              'amazon','เสื้อผ้า','แฟชั่น','แต่งตัว','ของ','เครื่องใช้','เฟอร์นิเจอร์'],
+              'amazon','เสื้อผ้า','แฟชั่น','แต่งตัว','เครื่องใช้','เฟอร์นิเจอร์'],
     Entertainment:['หนัง','netflix','spotify','เกม','concert','คอนเสิร์ต','karaoke','คาราโอเกะ',
-                   'บาร์','ผับ','สวนสนุก','ดูหนัง','ท่องเที่ยว','เที่ยว','วันหยุด'],
-    Health:['หมอ','โรงพยาบาล','ยา','ฟิตเนส','gym','วิตามิน','คลินิก','ทันตกรรม','ฟัน','นวด','สปา','สุขภาพ'],
+                   'บาร์','ผับ','สวนสนุก','ดูหนัง','ท่องเที่ยว','เที่ยว'],
+    Health:['หมอ','โรงพยาบาล','ยา','ฟิตเนส','gym','วิตามิน','คลินิก','ทันตกรรม','ฟัน','นวด','สปา'],
     Utilities:['ค่าไฟ','ค่าน้ำ','อินเทอร์เน็ต','internet','โทรศัพท์','ค่าเช่า','เช่า','คอนโด',
-               'ประกัน','ค่าบ้าน','wifi','ค่าห้อง','ค่าน้ำมัน']
+               'ประกัน','ค่าบ้าน','wifi','ค่าห้อง']
   }
 };
 
 function parseNaturalInput(text) {
   const lower = text.toLowerCase().trim();
   if (!lower) return null;
-
   const amtMatch = lower.match(/(\d+(?:[.,]\d+)?)\s*(?:บาท|฿|thb|bath)?/);
   if (!amtMatch) return null;
   const amount = parseFloat(amtMatch[1].replace(',',''));
   const desc   = text.replace(/\d+(?:[.,]\d+)?\s*(?:บาท|฿|thb|bath)?/i,'').trim() || text.trim();
-
   for (const [cat, kws] of Object.entries(NLP.income)) {
     if (kws.some(k => lower.includes(k))) return { type:'income',  cat, amount, desc };
   }
@@ -841,6 +715,64 @@ function parseNaturalInput(text) {
     if (kws.some(k => lower.includes(k))) return { type:'expense', cat, amount, desc };
   }
   return { type:'expense', cat:'Other Expense', amount, desc };
+}
+
+/* ── STORAGE HELPERS ──────────────────────────────────── */
+function saveTxn()  { localStorage.setItem('acc_txn',  JSON.stringify(transactions)); }
+function saveRec()  { localStorage.setItem('acc_rec',  JSON.stringify(recurring)); }
+function saveBgt()  { localStorage.setItem('acc_bgt',  JSON.stringify(budgets)); }
+function saveCustomCats() { localStorage.setItem('acc_custom_cats', JSON.stringify(customCategories)); }
+function genId()    { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+/* ── BOOT ─────────────────────────────────────────────── */
+applyTheme();
+applyCurrency();
+autoAddRecurring();
+buildCatDd();
+syncFilterCats();
+buildBudgetInputs();
+refresh();
+document.getElementById('txDate').valueAsDate = new Date();
+document.addEventListener('click', e => {
+  if (!document.getElementById('catWrap').contains(e.target)) closeCatDd();
+});
+
+/* ── THEME ────────────────────────────────────────────── */
+function applyTheme() {
+  document.body.classList.toggle('light', !darkMode);
+  document.getElementById('themeToggle').textContent = darkMode ? '🌙' : '☀️';
+}
+function toggleTheme() {
+  darkMode = !darkMode;
+  localStorage.setItem('acc_theme', darkMode ? 'dark' : 'light');
+  applyTheme(); renderDonut(); renderLine();
+}
+
+/* ── CURRENCY ─────────────────────────────────────────── */
+function applyCurrency() {
+  document.getElementById('currencySelect').value = currency;
+  document.getElementById('amtLabel').textContent = `จำนวนเงิน (${currency})`;
+}
+function setCurrency(sym) {
+  currency = sym;
+  localStorage.setItem('acc_cur', sym);
+  document.getElementById('amtLabel').textContent = `จำนวนเงิน (${sym})`;
+  refresh();
+}
+function fmt(n) {
+  const abs = Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return (n < 0 ? '-' : '') + currency + abs;
+}
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+/* ── TYPE TOGGLE ──────────────────────────────────────── */
+function setType(t) {
+  currentType = t;
+  document.getElementById('btnIncome').classList.toggle('active',  t==='income');
+  document.getElementById('btnExpense').classList.toggle('active', t==='expense');
 }
 
 /* ── CHAT UI ──────────────────────────────────────────── */
@@ -853,17 +785,15 @@ function processChat() {
   const input = document.getElementById('chatInput');
   const text  = input.value.trim();
   if (!text) return;
-
   const parsed = parseNaturalInput(text);
   if (!parsed) { showToast('ไม่พบตัวเลขในข้อความ ลองใหม่อีกครั้ง', 'error'); return; }
-
   pendingParsed = { ...parsed, date: todayStr() };
   showPreview(pendingParsed);
 }
 
 function showPreview(p) {
   const icon      = ICONS[p.cat] || '💸';
-  const catLabel  = (CAT_TH[p.cat] || p.cat);
+  const catLabel  = CAT_TH[p.cat] || p.cat;
   const typeLabel = p.type === 'income' ? 'รายรับ' : 'รายจ่าย';
   const sign      = p.type === 'income' ? '+' : '-';
   const previewEl = document.getElementById('chatPreview');
@@ -883,22 +813,15 @@ function showPreview(p) {
   `;
 }
 
-async function confirmChat() {
+function confirmChat() {
   if (!pendingParsed) return;
   const { type, cat, amount, desc, date } = pendingParsed;
-
-  const { data, error } = await sb.from('transactions').insert({
-    user_id: currentUser.id, type, description: desc, amount, cat,
-    date, is_recurring: false, auto_added: false
-  }).select().single();
-
-  if (error) { showToast('เกิดข้อผิดพลาด: ' + error.message, 'error'); return; }
-
-  transactions.unshift({ id:data.id, type, desc, amount, cat, date, recurring:false, autoAdded:false });
+  const tx = { id:genId(), type, desc, amount, cat, date, recurring:false, autoAdded:false };
+  transactions.unshift(tx);
+  saveTxn();
   refresh();
   cancelPreview();
   document.getElementById('chatInput').value = '';
-
   const sign = type === 'income' ? '+' : '-';
   showToast(`บันทึกแล้ว ${sign}${fmt(amount)} (${CAT_TH[cat]||cat}) ✓`, 'success');
 }
@@ -924,138 +847,14 @@ function cancelPreview() {
 function showManualForm() {
   document.getElementById('manualForm').style.display = 'block';
 }
-
 function toggleManualForm() {
   const f = document.getElementById('manualForm');
   f.style.display = f.style.display === 'none' ? 'block' : 'none';
 }
 
-/* ── BOOT ─────────────────────────────────────────────── */
-applyTheme();
-initAuth();
-
-/* ── AUTH ─────────────────────────────────────────────── */
-async function initAuth() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) { currentUser = session.user; await onLogin(); }
-  else showAuthScreen();
-
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session) {
-      currentUser = session.user; await onLogin();
-    } else if (event === 'SIGNED_OUT') {
-      currentUser = null; transactions = []; refresh(); showAuthScreen();
-    }
-  });
-}
-
-function showAuthScreen() {
-  document.getElementById('authScreen').style.display   = 'flex';
-  document.getElementById('mainHeader').style.display   = 'none';
-  document.getElementById('mainContainer').style.display= 'none';
-}
-function hideAuthScreen() {
-  document.getElementById('authScreen').style.display   = 'none';
-  document.getElementById('mainHeader').style.display   = '';
-  document.getElementById('mainContainer').style.display= '';
-}
-
-async function signIn() {
-  const email = document.getElementById('authEmail').value.trim();
-  const pass  = document.getElementById('authPass').value;
-  const errEl = document.getElementById('authError');
-  errEl.style.color = '#f87171'; errEl.textContent = '';
-  if (!email||!pass) { errEl.textContent='กรุณากรอกอีเมลและรหัสผ่าน'; return; }
-  const { error } = await sb.auth.signInWithPassword({ email, password:pass });
-  if (error) errEl.textContent = error.message;
-}
-
-async function signUp() {
-  const email = document.getElementById('authEmail').value.trim();
-  const pass  = document.getElementById('authPass').value;
-  const errEl = document.getElementById('authError');
-  errEl.style.color = '#f87171'; errEl.textContent = '';
-  if (!email||!pass)  { errEl.textContent='กรุณากรอกอีเมลและรหัสผ่าน'; return; }
-  if (pass.length<6)  { errEl.textContent='รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร'; return; }
-  const { error } = await sb.auth.signUp({ email, password:pass });
-  if (error) { errEl.textContent = error.message; }
-  else { errEl.style.color='#4ade80'; errEl.textContent='✓ สมัครแล้ว! เช็คอีเมลยืนยัน จากนั้นเข้าสู่ระบบได้เลย'; }
-}
-
-async function logout() { await sb.auth.signOut(); }
-
-async function onLogin() {
-  hideAuthScreen();
-  document.getElementById('userEmail').textContent = currentUser.email;
-  await loadTransactionsFromDB();
-  applyCurrency();
-  await autoAddRecurring();
-  buildCatDd();
-  syncFilterCats();
-  buildBudgetInputs();
-  refresh();
-  document.getElementById('txDate').valueAsDate = new Date();
-  document.addEventListener('click', e => {
-    if (!document.getElementById('catWrap').contains(e.target)) closeCatDd();
-  });
-}
-
-/* ── DB ───────────────────────────────────────────────── */
-async function loadTransactionsFromDB() {
-  const { data, error } = await sb.from('transactions').select('*')
-    .eq('user_id', currentUser.id).order('date', { ascending:false });
-  if (error) { console.error(error); return; }
-  transactions = (data||[]).map(row => ({
-    id:row.id, type:row.type, desc:row.description, amount:parseFloat(row.amount),
-    cat:row.cat, date:row.date, recurring:row.is_recurring, autoAdded:row.auto_added
-  }));
-}
-
-function saveRec() { localStorage.setItem('acc_rec', JSON.stringify(recurring)); }
-function saveBgt() { localStorage.setItem('acc_bgt', JSON.stringify(budgets)); }
-
-/* ── THEME ────────────────────────────────────────────── */
-function applyTheme() {
-  document.body.classList.toggle('light', !darkMode);
-  const btn = document.getElementById('themeToggle');
-  if (btn) btn.textContent = darkMode ? '🌙' : '☀️';
-}
-function toggleTheme() {
-  darkMode = !darkMode;
-  localStorage.setItem('acc_theme', darkMode ? 'dark' : 'light');
-  applyTheme(); renderDonut(); renderLine();
-}
-
-/* ── CURRENCY ─────────────────────────────────────────── */
-function applyCurrency() {
-  document.getElementById('currencySelect').value = currency;
-  document.getElementById('amtLabel').textContent = `จำนวนเงิน (${currency})`;
-}
-function setCurrency(sym) {
-  currency = sym;
-  localStorage.setItem('acc_cur', sym);
-  document.getElementById('amtLabel').textContent = `จำนวนเงิน (${sym})`;
-  refresh();
-}
-function fmt(n) {
-  const abs = Math.abs(n).toLocaleString('th-TH',{minimumFractionDigits:0,maximumFractionDigits:2});
-  return (n < 0 ? '-' : '') + currency + abs;
-}
-function todayStr() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-
-/* ── TYPE TOGGLE ──────────────────────────────────────── */
-function setType(t) {
-  currentType = t;
-  document.getElementById('btnIncome').classList.toggle('active',  t==='income');
-  document.getElementById('btnExpense').classList.toggle('active', t==='expense');
-}
-
 /* ── CRUD ─────────────────────────────────────────────── */
-async function submitTransaction() {
-  editingId !== null ? await updateTransaction() : await addTransaction();
+function submitTransaction() {
+  editingId !== null ? updateTransaction() : addTransaction();
 }
 
 function getFormValues() {
@@ -1070,28 +869,22 @@ function getFormValues() {
   };
 }
 
-async function addTransaction() {
+function addTransaction() {
   const vals = getFormValues();
   if (!vals) return;
   const { desc, amount, cat, date, isRecur } = vals;
-  if (!desc)               return shake('desc',   'กรุณากรอกรายละเอียด');
-  if (!amount||amount<=0)  return shake('amount', 'กรุณากรอกจำนวนเงินที่ถูกต้อง');
-  if (!date)               return shake('txDate', 'กรุณาเลือกวันที่');
-
-  const { data, error } = await sb.from('transactions').insert({
-    user_id:currentUser.id, type:currentType, description:desc, amount, cat,
-    date, is_recurring:isRecur, auto_added:false
-  }).select().single();
-
-  if (error) { showToast('เกิดข้อผิดพลาด: '+error.message, 'error'); return; }
-  transactions.unshift({ id:data.id, type:currentType, desc, amount, cat, date, recurring:isRecur, autoAdded:false });
+  if (!desc)              return shake('desc',   'กรุณากรอกรายละเอียด');
+  if (!amount||amount<=0) return shake('amount', 'กรุณากรอกจำนวนเงินที่ถูกต้อง');
+  if (!date)              return shake('txDate', 'กรุณาเลือกวันที่');
+  const tx = { id:genId(), type:currentType, desc, amount, cat, date, recurring:isRecur, autoAdded:false };
+  transactions.unshift(tx);
   if (isRecur) { recurring.push({type:currentType,desc,amount,cat}); saveRec(); }
-  refresh(); resetForm();
+  saveTxn(); refresh(); resetForm();
   showToast('บันทึกรายการแล้ว ✓', 'success');
 }
 
 function startEdit(id) {
-  const t = transactions.find(x => String(x.id)===String(id));
+  const t = transactions.find(x => x.id === id);
   if (!t) return;
   editingId = t.id;
   document.getElementById('formTitle').textContent    = 'แก้ไขรายการ';
@@ -1109,22 +902,16 @@ function startEdit(id) {
   document.getElementById('manualForm').scrollIntoView({ behavior:'smooth' });
 }
 
-async function updateTransaction() {
+function updateTransaction() {
   const vals = getFormValues();
   if (!vals) return;
   const { desc, amount, cat, date, isRecur } = vals;
   if (!desc)              return shake('desc',   'กรุณากรอกรายละเอียด');
   if (!amount||amount<=0) return shake('amount', 'กรุณากรอกจำนวนเงินที่ถูกต้อง');
   if (!date)              return shake('txDate', 'กรุณาเลือกวันที่');
-
-  const { error } = await sb.from('transactions').update({
-    type:currentType, description:desc, amount, cat, date, is_recurring:isRecur
-  }).eq('id', editingId).eq('user_id', currentUser.id);
-
-  if (error) { showToast('เกิดข้อผิดพลาด: '+error.message, 'error'); return; }
-  const idx = transactions.findIndex(x => x.id===editingId);
-  if (idx!==-1) transactions[idx] = {...transactions[idx], type:currentType, desc, amount, cat, date, recurring:isRecur};
-  refresh(); cancelEdit();
+  const idx = transactions.findIndex(x => x.id === editingId);
+  if (idx !== -1) transactions[idx] = {...transactions[idx], type:currentType, desc, amount, cat, date, recurring:isRecur};
+  saveTxn(); refresh(); cancelEdit();
   showToast('แก้ไขรายการแล้ว ✓', 'success');
 }
 
@@ -1145,6 +932,19 @@ function resetForm() {
   selectedCategory = 'Salary'; cancelCustomCat(); buildCatDd(); setType('income');
 }
 
+function deleteTransaction(id) {
+  if (!confirm('ลบรายการนี้?')) return;
+  transactions = transactions.filter(t => t.id !== id);
+  saveTxn(); refresh();
+  showToast('ลบรายการแล้ว', 'success');
+}
+
+function clearAll() {
+  if (!confirm('ล้างข้อมูลทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้')) return;
+  transactions = []; saveTxn(); refresh();
+  showToast('ล้างข้อมูลแล้ว', 'success');
+}
+
 function shake(id, msg) {
   const el = document.getElementById(id);
   el.style.borderColor = '#f87171';
@@ -1152,42 +952,27 @@ function shake(id, msg) {
   showToast(msg, 'error');
 }
 
-async function deleteTransaction(id) {
-  if (!confirm('ลบรายการนี้?')) return;
-  const { error } = await sb.from('transactions').delete().eq('id',id).eq('user_id',currentUser.id);
-  if (error) { showToast('เกิดข้อผิดพลาด: '+error.message, 'error'); return; }
-  transactions = transactions.filter(t => String(t.id)!==String(id));
-  refresh(); showToast('ลบรายการแล้ว', 'success');
-}
-
 /* ── RECURRING ────────────────────────────────────────── */
-async function autoAddRecurring() {
-  if (!recurring.length||!currentUser) return;
+function autoAddRecurring() {
+  if (!recurring.length) return;
   const now      = new Date();
   const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  const stKey    = `acc_lastRecMonth_${currentUser.id}`;
-  if (localStorage.getItem(stKey)===monthKey) return;
-
+  const stKey    = 'acc_lastRecMonth';
+  if (localStorage.getItem(stKey) === monthKey) return;
   const dateStr  = `${monthKey}-01`;
-  const inserts  = recurring.map(tpl => ({
-    user_id:currentUser.id, type:tpl.type, description:tpl.desc,
-    amount:tpl.amount, cat:tpl.cat, date:dateStr, is_recurring:true, auto_added:true
-  }));
-
-  const { data, error } = await sb.from('transactions').insert(inserts).select();
-  if (error) { console.error(error); }
-  else if (data) {
-    data.forEach(row => transactions.unshift({
-      id:row.id, type:row.type, desc:row.description, amount:parseFloat(row.amount),
-      cat:row.cat, date:row.date, recurring:row.is_recurring, autoAdded:true
-    }));
-  }
+  recurring.forEach(tpl => {
+    transactions.unshift({
+      id:genId(), type:tpl.type, desc:tpl.desc, amount:tpl.amount,
+      cat:tpl.cat, date:dateStr, recurring:true, autoAdded:true
+    });
+  });
+  saveTxn();
   localStorage.setItem(stKey, monthKey);
 }
 
 /* ── TOTALS ───────────────────────────────────────────── */
 function calcTotals(arr) {
-  arr = arr||transactions;
+  arr = arr || transactions;
   const inc = arr.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
   const exp = arr.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   return { inc, exp, bal:inc-exp };
@@ -1199,10 +984,10 @@ function renderSummary() {
   document.getElementById('totalIncome').textContent  = fmt(inc);
   document.getElementById('totalExpense').textContent = fmt(exp);
   const balEl = document.getElementById('balance');
-  balEl.textContent  = fmt(bal);
-  balEl.style.color  = bal>=0 ? '#e879f9' : '#f87171';
+  balEl.textContent = fmt(bal);
+  balEl.style.color = bal >= 0 ? '#e879f9' : '#f87171';
   const mgEl = document.getElementById('netMargin');
-  if (inc===0) { mgEl.textContent='N/A'; mgEl.className='amount'; }
+  if (inc === 0) { mgEl.textContent='N/A'; mgEl.className='amount'; }
   else {
     const pct = (inc-exp)/inc*100;
     mgEl.textContent = pct.toFixed(1)+'%';
@@ -1214,36 +999,29 @@ function renderSummary() {
 function renderInsights() {
   const bar = document.getElementById('insightBar');
   if (!transactions.length) { bar.innerHTML=''; return; }
-
-  const now      = new Date();
-  const mk       = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  const thisMonth= transactions.filter(t=>t.date.startsWith(mk));
-  const { inc, exp } = calcTotals(thisMonth);
+  const now  = new Date();
+  const mk   = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const thisM= transactions.filter(t=>t.date.startsWith(mk));
+  const { inc, exp } = calcTotals(thisM);
   const chips = [];
-
   if (inc>0||exp>0) {
     chips.push(`<div class="insight-chip"><span class="ic-icon">📅</span>เดือนนี้ รายรับ <strong>${fmt(inc)}</strong> รายจ่าย <strong>${fmt(exp)}</strong></div>`);
   }
-
-  const catSpend = {};
-  thisMonth.filter(t=>t.type==='expense').forEach(t=>{ catSpend[t.cat]=(catSpend[t.cat]||0)+t.amount; });
-  const topCat = Object.entries(catSpend).sort((a,b)=>b[1]-a[1])[0];
-  if (topCat) {
-    chips.push(`<div class="insight-chip"><span class="ic-icon">${ICONS[topCat[0]]||'💸'}</span>ใช้เยอะสุด: <strong>${CAT_TH[topCat[0]]||topCat[0]} ${fmt(topCat[1])}</strong></div>`);
-  }
-
+  const catSpend={};
+  thisM.filter(t=>t.type==='expense').forEach(t=>{ catSpend[t.cat]=(catSpend[t.cat]||0)+t.amount; });
+  const top = Object.entries(catSpend).sort((a,b)=>b[1]-a[1])[0];
+  if (top) chips.push(`<div class="insight-chip"><span class="ic-icon">${ICONS[top[0]]||'💸'}</span>ใช้เยอะสุด: <strong>${CAT_TH[top[0]]||top[0]} ${fmt(top[1])}</strong></div>`);
   const prevMk = new Date(now.getFullYear(), now.getMonth()-1, 1);
   const pk     = `${prevMk.getFullYear()}-${String(prevMk.getMonth()+1).padStart(2,'0')}`;
-  const prevMonth = transactions.filter(t=>t.date.startsWith(pk));
-  if (prevMonth.length) {
-    const prevExp = prevMonth.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-    if (prevExp>0 && exp>0) {
-      const diff = ((exp-prevExp)/prevExp*100).toFixed(0);
-      const up   = diff>0;
+  const prevM  = transactions.filter(t=>t.date.startsWith(pk));
+  if (prevM.length) {
+    const prevExp = prevM.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    if (prevExp>0&&exp>0) {
+      const diff=((exp-prevExp)/prevExp*100).toFixed(0);
+      const up=diff>0;
       chips.push(`<div class="insight-chip"><span class="ic-icon">${up?'📈':'📉'}</span>รายจ่ายเทียบเดือนก่อน <strong style="color:${up?'#f87171':'#4ade80'}">${up?'+':''}${diff}%</strong></div>`);
     }
   }
-
   bar.innerHTML = chips.join('');
 }
 
@@ -1276,18 +1054,14 @@ function renderList() {
   `).join('');
 }
 
-function getCatIcon(cat) { return ICONS[cat]||(customCategories.includes(cat)?'🏷️':'💸'); }
-function getCatLabel(cat){ return CAT_TH[cat]||cat; }
+function getCatIcon(cat)  { return ICONS[cat]||(customCategories.includes(cat)?'🏷️':'💸'); }
+function getCatLabel(cat) { return CAT_TH[cat]||cat; }
 function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmtDate(d) {
-  const [y,m,day]=d.split('-');
-  return `${day}/${m}/${y}`;
-}
+function fmtDate(d) { const [y,m,day]=d.split('-'); return `${day}/${m}/${y}`; }
 function getExpenseCats() {
   const cExp=customCategories.filter(c=>transactions.some(t=>t.type==='expense'&&t.cat===c));
   return [...EXPENSE_CATS,...cExp];
 }
-function saveCustomCats() { localStorage.setItem('acc_custom_cats',JSON.stringify(customCategories)); }
 
 /* ── CHARTS ───────────────────────────────────────────── */
 function renderDonut() {
@@ -1307,12 +1081,12 @@ function renderDonut() {
   if (chartDonut) chartDonut.destroy();
   chartDonut=new Chart(canvas,{
     type:'doughnut',
-    data:{ labels, datasets:[{data, backgroundColor:palette.slice(0,labels.length), borderWidth:2, borderColor:brdCol }]},
+    data:{labels, datasets:[{data, backgroundColor:palette.slice(0,labels.length), borderWidth:2, borderColor:brdCol}]},
     options:{
       cutout:'66%',
       plugins:{
-        legend:{ position:'right', labels:{color:txtCol,font:{size:11},padding:8,boxWidth:11}},
-        tooltip:{ callbacks:{label:ctx=>` ${getCatLabel(ctx.label)}: ${fmt(ctx.raw)}`}}
+        legend:{position:'right',labels:{color:txtCol,font:{size:11},padding:8,boxWidth:11}},
+        tooltip:{callbacks:{label:ctx=>` ${getCatLabel(ctx.label)}: ${fmt(ctx.raw)}`}}
       }
     }
   });
@@ -1342,12 +1116,12 @@ function renderLine() {
     data:{
       labels,
       datasets:[
-        { label:'รายรับ', data:keys.map(k=>map[k].inc), borderColor:'#4ade80', backgroundColor:'rgba(74,222,128,.1)', tension:.35, fill:true, pointBackgroundColor:'#4ade80', pointRadius:4 },
-        { label:'รายจ่าย',data:keys.map(k=>map[k].exp), borderColor:'#f87171', backgroundColor:'rgba(248,113,113,.1)', tension:.35, fill:true, pointBackgroundColor:'#f87171', pointRadius:4 }
+        {label:'รายรับ', data:keys.map(k=>map[k].inc), borderColor:'#4ade80', backgroundColor:'rgba(74,222,128,.1)', tension:.35, fill:true, pointBackgroundColor:'#4ade80', pointRadius:4},
+        {label:'รายจ่าย',data:keys.map(k=>map[k].exp), borderColor:'#f87171', backgroundColor:'rgba(248,113,113,.1)', tension:.35, fill:true, pointBackgroundColor:'#f87171', pointRadius:4}
       ]
     },
     options:{
-      responsive:true, maintainAspectRatio:false,
+      responsive:true,maintainAspectRatio:false,
       plugins:{
         legend:{labels:{color:txtCol,font:{size:11}}},
         tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmt(ctx.raw)}`}}
@@ -1365,12 +1139,10 @@ function buildBudgetInputs() {
   document.getElementById('budgetInputs').innerHTML = getExpenseCats().map(cat=>`
     <div class="bgt-input-row">
       <span>${getCatIcon(cat)} ${getCatLabel(cat)}</span>
-      <input type="number" id="bgt_${cat.replace(/\s/g,'_')}"
-        min="0" step="1" placeholder="0" value="${budgets[cat]||''}" />
+      <input type="number" id="bgt_${cat.replace(/\s/g,'_')}" min="0" step="1" placeholder="0" value="${budgets[cat]||''}" />
     </div>
   `).join('');
 }
-
 function saveBudgets() {
   getExpenseCats().forEach(cat=>{
     const el=document.getElementById('bgt_'+cat.replace(/\s/g,'_'));
@@ -1381,7 +1153,6 @@ function saveBudgets() {
   saveBgt(); renderBudgetProgress();
   showToast('บันทึกงบประมาณแล้ว ✓','success');
 }
-
 function renderBudgetProgress() {
   const now=new Date();
   const mk=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
@@ -1401,15 +1172,9 @@ function renderBudgetProgress() {
     const lbl=limit>0?`${fmt(used)} / ${fmt(limit)}`:`${fmt(used)}`;
     return `
       <div class="budget-item">
-        <div class="bgt-label">
-          <span>${getCatIcon(cat)} ${getCatLabel(cat)}</span>
-          <strong>${lbl}${over?' ⚠️':''}</strong>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill ${over?'over':''}" style="width:${pct}%"></div>
-        </div>
-      </div>
-    `;
+        <div class="bgt-label"><span>${getCatIcon(cat)} ${getCatLabel(cat)}</span><strong>${lbl}${over?' ⚠️':''}</strong></div>
+        <div class="progress-track"><div class="progress-fill ${over?'over':''}" style="width:${pct}%"></div></div>
+      </div>`;
   }).join('');
 }
 
@@ -1427,19 +1192,16 @@ function renderMonthlyTable() {
   if (!keys.length) { tbody.innerHTML=''; noMsg.style.display='block'; return; }
   noMsg.style.display='none';
   tbody.innerHTML=keys.map(k=>{
-    const { inc, exp }=map[k]; const net=inc-exp;
+    const {inc,exp}=map[k]; const net=inc-exp;
     const [y,m]=k.split('-');
-    const label=MON[+m-1]+' '+y;
     const mg=inc>0?((inc-exp)/inc*100).toFixed(1)+'%':'N/A';
-    return `
-      <tr>
-        <td>${label}</td>
-        <td class="col-inc">+${fmt(inc)}</td>
-        <td class="col-exp">-${fmt(exp)}</td>
-        <td class="col-net ${net>=0?'pos':'neg'}">${fmt(net)}</td>
-        <td class="col-mg">${mg}</td>
-      </tr>
-    `;
+    return `<tr>
+      <td>${MON[+m-1]} ${y}</td>
+      <td class="col-inc">+${fmt(inc)}</td>
+      <td class="col-exp">-${fmt(exp)}</td>
+      <td class="col-net ${net>=0?'pos':'neg'}">${fmt(net)}</td>
+      <td class="col-mg">${mg}</td>
+    </tr>`;
   }).join('');
 }
 
@@ -1465,9 +1227,7 @@ function buildCatDd() {
     html+=`<div class="cat-grp">${g.label}</div>`;
     g.cats.forEach(cat=>{
       const active=selectedCategory===cat?' active':'';
-      html+=`<div class="cat-opt${active}" data-cat="${escAttr(cat)}">
-               <span class="cat-name">${ICONS[cat]} ${getCatLabel(cat)}</span>
-             </div>`;
+      html+=`<div class="cat-opt${active}" data-cat="${escAttr(cat)}"><span class="cat-name">${ICONS[cat]} ${getCatLabel(cat)}</span></div>`;
     });
   });
   if (customCategories.length) {
@@ -1512,7 +1272,7 @@ function confirmCustomCat(){
   selectedCategory=name; cancelCustomCat(); buildCatDd(); return true;
 }
 function deleteCustomCat(cat){
-  if (!confirm(`ลบหมวดหมู่ "${cat}"?\nรายการที่ใช้หมวดนี้จะยังคงชื่อเดิม`)) return;
+  if (!confirm(`ลบหมวดหมู่ "${cat}"?`)) return;
   customCategories=customCategories.filter(c=>c!==cat); saveCustomCats();
   if (selectedCategory===cat) selectedCategory='Salary';
   buildCatDd(); syncFilterCats(); buildBudgetInputs(); renderBudgetProgress();
@@ -1524,16 +1284,16 @@ function syncFilterCats(){
 }
 
 /* ── TOAST ────────────────────────────────────────────── */
-let _toastTimer = null;
-function showToast(msg, type='success') {
+let _toastTimer=null;
+function showToast(msg,type='success'){
   const el=document.getElementById('toast');
   el.textContent=msg; el.className='toast '+type+' show';
   if (_toastTimer) clearTimeout(_toastTimer);
-  _toastTimer=setTimeout(()=>{ el.className='toast'; }, 2800);
+  _toastTimer=setTimeout(()=>{ el.className='toast'; },2800);
 }
 
 /* ── REFRESH ──────────────────────────────────────────── */
-function refresh() {
+function refresh(){
   renderSummary();
   renderInsights();
   renderList();
